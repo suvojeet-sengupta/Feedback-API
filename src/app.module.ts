@@ -23,7 +23,7 @@ import { Feedback } from './feedback/entities/feedback.entity';
         type: 'sqlite' as const,
         database: configService.get<string>('database.path'),
         entities: [Feedback],
-        synchronize: configService.get<string>('nodeEnv') !== 'production',
+        synchronize: true,
         logging: configService.get<string>('nodeEnv') === 'development',
       }),
     }),

@@ -17,7 +17,7 @@ services:
     volumes:
       - feedback-data:/app/data
     healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://localhost:3000/api/feedback/apps"]
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/api/feedback/health"]
       interval: 30s
       timeout: 5s
       retries: 3

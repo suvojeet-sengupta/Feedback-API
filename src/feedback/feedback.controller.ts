@@ -25,13 +25,24 @@ import { FeedbackService } from './feedback.service';
 import { CreateFeedbackDto } from './dto/create-feedback.dto';
 import { QueryFeedbackDto } from './dto/query-feedback.dto';
 import { UpdateFeedbackStatusDto } from './dto/update-feedback-status.dto';
+import { Public } from '../common/guards/api-key.guard';
 
 @ApiTags('Feedback')
 @Controller('api/feedback')
 export class FeedbackController {
   constructor(private readonly feedbackService: FeedbackService) {}
 
+  @Get('health')
+  @Public()
+  @ApiTags('Health')
+  @ApiOperation({ summary: 'API Health check' })
+  @ApiResponse({ status: 200, description: 'API is healthy' })
+  health() {
+    return { status: 'OK', timestamp: new Date().toISOString() };
+  }
+
   @Post()
+  @Public()
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Submit new feedback' })
   @ApiResponse({ status: 201, description: 'Feedback submitted successfully' })
