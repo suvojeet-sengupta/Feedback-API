@@ -28,17 +28,17 @@ export class TelegramService {
 
     let text = `*New Feedback Received*\n\n`;
     text += `*App:* ${this.escapeMarkdown(feedback.appName)}`;
-    if (feedback.appVersion) text += ` (v${this.escapeMarkdown(feedback.appVersion)})`;
+    if (feedback.appVersion) text += ` \\(v${this.escapeMarkdown(feedback.appVersion)}\\)`;
     text += `\n`;
     text += `*Rating:* ${feedback.rating}/5\n`;
     text += `*Category:* ${this.escapeMarkdown(feedback.category)}\n`;
-    text += `*Status:* ${feedback.status}\n\n`;
+    text += `*Status:* ${this.escapeMarkdown(feedback.status)}\n\n`;
     text += `*Message:*\n${this.escapeMarkdown(feedback.message)}\n`;
 
     if (feedback.userName || feedback.userEmail) {
       text += `\n*User:* `;
       if (feedback.userName) text += this.escapeMarkdown(feedback.userName);
-      if (feedback.userEmail) text += ` (${this.escapeMarkdown(feedback.userEmail)})`;
+      if (feedback.userEmail) text += ` \\(${this.escapeMarkdown(feedback.userEmail)}\\)`;
       text += `\n`;
     }
 
@@ -56,7 +56,7 @@ export class TelegramService {
       text += `\n*Tags:* ${feedback.tags.map(t => `#${this.escapeMarkdown(t)}`).join(' ')}\n`;
     }
 
-    text += `\n*Date:* ${feedback.createdAt.toISOString()}`;
+    text += `\n*Date:* ${this.escapeMarkdown(feedback.createdAt.toISOString())}`;
     text += `\n*ID:* \`${feedback.id}\``;
 
     await this.sendMessage(text);
@@ -85,19 +85,19 @@ export class TelegramService {
 
     let text = `*Daily Feedback Summary*\n\n`;
     text += `*Total Feedback Today:* ${stats.totalToday}\n`;
-    text += `*Average Rating:* ${stats.averageRating.toFixed(1)}/5\n`;
+    text += `*Average Rating:* ${stats.averageRating.toFixed(1)}\/5\n`;
 
     if (Object.keys(stats.byApp).length > 0) {
       text += `\n*By App:*\n`;
       for (const [app, count] of Object.entries(stats.byApp)) {
-        text += `  - ${this.escapeMarkdown(app)}: ${count}\n`;
+        text += `  \\- ${this.escapeMarkdown(app)}\: ${count}\n`;
       }
     }
 
     if (Object.keys(stats.byCategory).length > 0) {
       text += `\n*By Category:*\n`;
       for (const [cat, count] of Object.entries(stats.byCategory)) {
-        text += `  - ${this.escapeMarkdown(cat)}: ${count}\n`;
+        text += `  \\- ${this.escapeMarkdown(cat)}\: ${count}\n`;
       }
     }
 
