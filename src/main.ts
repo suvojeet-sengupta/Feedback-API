@@ -39,6 +39,7 @@ async function bootstrap() {
     )
     .setVersion('1.0')
     .addApiKey({ type: 'apiKey', name: 'X-API-Key', in: 'header' }, 'api-key')
+    .addBearerAuth({ type: 'http', scheme: 'bearer', bearerFormat: 'API Key' }, 'bearer')
     .addTag('Feedback', 'Feedback submission and management')
     .addTag('Health', 'API health checks')
     .build();

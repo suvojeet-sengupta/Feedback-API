@@ -19,6 +19,8 @@ import {
   ApiParam,
   ApiQuery,
   ApiHeader,
+  ApiSecurity,
+  ApiBearerAuth,
 } from '@nestjs/swagger';
 import { Request } from 'express';
 import { FeedbackService } from './feedback.service';
@@ -28,6 +30,8 @@ import { UpdateFeedbackStatusDto } from './dto/update-feedback-status.dto';
 import { Public } from '../common/guards/api-key.guard';
 
 @ApiTags('Feedback')
+@ApiSecurity('api-key')
+@ApiBearerAuth('bearer')
 @Controller('api/feedback')
 export class FeedbackController {
   constructor(private readonly feedbackService: FeedbackService) {}
