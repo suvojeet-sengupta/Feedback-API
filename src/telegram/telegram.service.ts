@@ -53,7 +53,7 @@ export class TelegramService {
     }
 
     if (feedback.tags && feedback.tags.length > 0) {
-      text += `\n*Tags:* ${feedback.tags.map(t => `#${this.escapeMarkdown(t)}`).join(' ')}\n`;
+      text += `\n*Tags:* ${feedback.tags.map(t => `\\#${this.escapeMarkdown(t)}`).join(' ')}\n`;
     }
 
     text += `\n*Date:* ${this.escapeMarkdown(feedback.createdAt.toISOString())}`;
@@ -85,7 +85,7 @@ export class TelegramService {
 
     let text = `*Daily Feedback Summary*\n\n`;
     text += `*Total Feedback Today:* ${stats.totalToday}\n`;
-    text += `*Average Rating:* ${stats.averageRating.toFixed(1)}\/5\n`;
+    text += `*Average Rating:* ${this.escapeMarkdown(stats.averageRating.toFixed(1))}\/5\n`;
 
     if (Object.keys(stats.byApp).length > 0) {
       text += `\n*By App:*\n`;
@@ -132,6 +132,6 @@ export class TelegramService {
 
   private escapeMarkdown(text: string): string {
     if (!text) return '';
-    return text.replace(/([_*\[\]()~`>#+\-=|{}.!])/g, '\\$1');
+    return text.replace(/([_*\[\]()~`>#+\-=|{}.!\\])/g, '\\$1');
   }
 }
