@@ -26,27 +26,24 @@ export class TelegramService {
       return;
     }
 
-    const stars = '⭐'.repeat(feedback.rating) + '☆'.repeat(5 - feedback.rating);
-    const categoryEmoji = this.getCategoryEmoji(feedback.category);
-
-    let text = `📱 *New Feedback Received*\n\n`;
+    let text = `*New Feedback Received*\n\n`;
     text += `*App:* ${this.escapeMarkdown(feedback.appName)}`;
     if (feedback.appVersion) text += ` (v${this.escapeMarkdown(feedback.appVersion)})`;
     text += `\n`;
-    text += `*Rating:* ${stars} (${feedback.rating}/5)\n`;
-    text += `*Category:* ${categoryEmoji} ${this.escapeMarkdown(feedback.category)}\n`;
-    text += `*Status:* 🆕 ${feedback.status}\n\n`;
-    text += `💬 *Message:*\n${this.escapeMarkdown(feedback.message)}\n`;
+    text += `*Rating:* ${feedback.rating}/5\n`;
+    text += `*Category:* ${this.escapeMarkdown(feedback.category)}\n`;
+    text += `*Status:* ${feedback.status}\n\n`;
+    text += `*Message:*\n${this.escapeMarkdown(feedback.message)}\n`;
 
     if (feedback.userName || feedback.userEmail) {
-      text += `\n👤 *User:* `;
+      text += `\n*User:* `;
       if (feedback.userName) text += this.escapeMarkdown(feedback.userName);
       if (feedback.userEmail) text += ` (${this.escapeMarkdown(feedback.userEmail)})`;
       text += `\n`;
     }
 
     if (feedback.deviceModel || feedback.osVersion) {
-      text += `\n📲 *Device:* `;
+      text += `\n*Device:* `;
       const parts: string[] = [];
       if (feedback.deviceBrand) parts.push(this.escapeMarkdown(feedback.deviceBrand));
       if (feedback.deviceModel) parts.push(this.escapeMarkdown(feedback.deviceModel));
@@ -56,11 +53,11 @@ export class TelegramService {
     }
 
     if (feedback.tags && feedback.tags.length > 0) {
-      text += `\n🏷 *Tags:* ${feedback.tags.map(t => `#${this.escapeMarkdown(t)}`).join(' ')}\n`;
+      text += `\n*Tags:* ${feedback.tags.map(t => `#${this.escapeMarkdown(t)}`).join(' ')}\n`;
     }
 
-    text += `\n🕐 ${feedback.createdAt.toISOString()}`;
-    text += `\n🆔 \`${feedback.id}\``;
+    text += `\n*Date:* ${feedback.createdAt.toISOString()}`;
+    text += `\n*ID:* \`${feedback.id}\``;
 
     await this.sendMessage(text);
   }
@@ -68,12 +65,12 @@ export class TelegramService {
   async sendStatusUpdateNotification(feedback: Feedback, previousStatus: string): Promise<void> {
     if (!this.enabled) return;
 
-    let text = `🔄 *Feedback Status Updated*\n\n`;
+    let text = `*Feedback Status Updated*\n\n`;
     text += `*App:* ${this.escapeMarkdown(feedback.appName)}\n`;
-    text += `*Status:* ${this.escapeMarkdown(previousStatus)} → *${this.escapeMarkdown(feedback.status)}*\n`;
-    text += `*Rating:* ${'⭐'.repeat(feedback.rating)} (${feedback.rating}/5)\n`;
-    text += `\n💬 ${this.escapeMarkdown(feedback.message.substring(0, 100))}${feedback.message.length > 100 ? '...' : ''}\n`;
-    text += `\n🆔 \`${feedback.id}\``;
+    text += `*Status:* ${this.escapeMarkdown(previousStatus)} -> *${this.escapeMarkdown(feedback.status)}*\n`;
+    text += `*Rating:* ${feedback.rating}/5\n`;
+    text += `\n*Message:*\n${this.escapeMarkdown(feedback.message.substring(0, 100))}${feedback.message.length > 100 ? '...' : ''}\n`;
+    text += `\n*ID:* \`${feedback.id}\``;
 
     await this.sendMessage(text);
   }
@@ -86,21 +83,21 @@ export class TelegramService {
   }): Promise<void> {
     if (!this.enabled) return;
 
-    let text = `📊 *Daily Feedback Summary*\n\n`;
+    let text = `*Daily Feedback Summary*\n\n`;
     text += `*Total Feedback Today:* ${stats.totalToday}\n`;
-    text += `*Average Rating:* ${'⭐'.repeat(Math.round(stats.averageRating))} (${stats.averageRating.toFixed(1)}/5)\n`;
+    text += `*Average Rating:* ${stats.averageRating.toFixed(1)}/5\n`;
 
     if (Object.keys(stats.byApp).length > 0) {
-      text += `\n📱 *By App:*\n`;
+      text += `\n*By App:*\n`;
       for (const [app, count] of Object.entries(stats.byApp)) {
-        text += `  • ${this.escapeMarkdown(app)}: ${count}\n`;
+        text += `  - ${this.escapeMarkdown(app)}: ${count}\n`;
       }
     }
 
     if (Object.keys(stats.byCategory).length > 0) {
-      text += `\n📁 *By Category:*\n`;
+      text += `\n*By Category:*\n`;
       for (const [cat, count] of Object.entries(stats.byCategory)) {
-        text += `  • ${this.getCategoryEmoji(cat)} ${this.escapeMarkdown(cat)}: ${count}\n`;
+        text += `  - ${this.escapeMarkdown(cat)}: ${count}\n`;
       }
     }
 
@@ -131,19 +128,6 @@ export class TelegramService {
     } catch (error) {
       this.logger.error(`Failed to send Telegram notification: ${(error as Error).message}`);
     }
-  }
-
-  private getCategoryEmoji(category: string): string {
-    const emojis: Record<string, string> = {
-      bug: '🐛',
-      feature: '✨',
-      improvement: '🔧',
-      ui_ux: '🎨',
-      performance: '⚡',
-      general: '💬',
-      other: '📝',
-    };
-    return emojis[category] || '📝';
   }
 
   private escapeMarkdown(text: string): string {
