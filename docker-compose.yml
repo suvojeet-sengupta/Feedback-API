@@ -1,0 +1,34 @@
+services:
+  # ── App Feedback API ──────────────────────────────────
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: app-feedback-api
+    restart: unless-stopped
+    ports:
+      - "${PORT:-3000}:3000"
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - DB_PATH=/app/data/feedback.sqlite
+    volumes:
+      - feedback-data:/app/data
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/api/feedback/apps"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    networks:
+      - feedback-network
+
+volumes:
+  feedback-data:
+    driver: local
+
+networks:
+  feedback-network:
+    driver: bridge
