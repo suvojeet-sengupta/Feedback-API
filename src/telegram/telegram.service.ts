@@ -67,9 +67,9 @@ export class TelegramService {
 
     let text = `*Feedback Status Updated*\n\n`;
     text += `*App:* ${this.escapeMarkdown(feedback.appName)}\n`;
-    text += `*Status:* ${this.escapeMarkdown(previousStatus)} -> *${this.escapeMarkdown(feedback.status)}*\n`;
+    text += `*Status:* ${this.escapeMarkdown(previousStatus)} \\-\\> *${this.escapeMarkdown(feedback.status)}*\n`;
     text += `*Rating:* ${feedback.rating}/5\n`;
-    text += `\n*Message:*\n${this.escapeMarkdown(feedback.message.substring(0, 100))}${feedback.message.length > 100 ? '...' : ''}\n`;
+    text += `\n*Message:*\n${this.escapeMarkdown(feedback.message.substring(0, 100))}${feedback.message.length > 100 ? '\\.\\.\\.' : ''}\n`;
     text += `\n*ID:* \`${feedback.id}\``;
 
     await this.sendMessage(text);
@@ -114,7 +114,7 @@ export class TelegramService {
         body: JSON.stringify({
           chat_id: this.chatId,
           text,
-          parse_mode: 'Markdown',
+          parse_mode: 'MarkdownV2',
           disable_web_page_preview: true,
         }),
       });
